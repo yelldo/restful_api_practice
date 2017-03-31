@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!--<group name="mv2" title="会员管理的DX缓存组"/>-->
+    <!--<group name="mgr" title="后台管理的DX缓存组"/>-->
+    <!--<group name="mv2cltlogin" title="客户端登录成功后保存的用户信息" express="3600"/>-->
+    <!--<group name="session" express="3600" title="会话数据1个小时后超时"></group>-->
+    <group name="vcode" title="短信验证码" express="600"/>
+    <!--<group name="logininfo" title="客户端登录成功后保存的用户信息" express="25200"/>-->
+    <!--3600*7-->
+    <!--<group name="token" express="25200" title="token保存一周过期"></group>-->
+    <group name="token2" express="30" title="token保存一周过期"></group>
+    <group name="redis_demo32" express="30" title="redis自动过期demo3"></group>
+</root>

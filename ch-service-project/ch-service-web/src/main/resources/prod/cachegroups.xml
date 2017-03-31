@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!--express 以秒为单位-->
+    <group name="vcode" title="短信验证码" express="600"/>
+    <group name="token" express="30" title="token测试30s过期"></group>
+    <group name="redis_demo3" express="30" title="redis自动过期demo3"></group>
+</root>
