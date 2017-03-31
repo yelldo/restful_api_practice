@@ -25,10 +25,11 @@ public class UserAction extends ParentAction {
     @RequestMapping(value="helloworld")
     @ResponseBody
     public Message test() {
+        //test git add and commit
         return Message.success("访问成功","helloword");
     }
 
-    @RequestMapping(value="testUserService")
+    @RequestMapping(value="testUse  rService")
     @ResponseBody
     public Message testUserService() {
         UserService userService = this.getProxy(UserService.class);
