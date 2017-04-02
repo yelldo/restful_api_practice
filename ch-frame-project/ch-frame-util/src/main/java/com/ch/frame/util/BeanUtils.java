@@ -1,6 +1,6 @@
 package com.ch.frame.util;
 
-import com.hx.frame.exception.GeneralException;
+import com.ch.frame.exception.GeneralException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

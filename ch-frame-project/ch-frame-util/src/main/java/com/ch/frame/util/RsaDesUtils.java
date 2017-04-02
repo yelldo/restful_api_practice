@@ -1,7 +1,7 @@
 package com.ch.frame.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hx.frame.exception.GeneralException;
+import com.ch.frame.exception.GeneralException;
 
 import java.util.Map;
 import java.util.Random;

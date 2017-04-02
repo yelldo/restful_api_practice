@@ -1,6 +1,6 @@
 package com.ch.frame.util;
 
-import com.hx.frame.exception.GeneralException;
+import com.ch.frame.exception.GeneralException;
 
 import java.sql.Date;
 import java.sql.Time;

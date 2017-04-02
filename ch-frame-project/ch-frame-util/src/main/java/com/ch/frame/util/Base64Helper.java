@@ -1,6 +1,7 @@
 package com.ch.frame.util;
 
 import java.io.*;
+import org.apache.commons.net.util.Base64;
 
 /**
  * Base64 编码和解码。
@@ -26,7 +27,7 @@ public class Base64Helper {
      */
     public static String encode(String data) {
         try {
-            return Base64.encodeBase64String(data.getBytes(UTF_8));
+            return  Base64.encodeBase64String(data.getBytes(UTF_8));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
