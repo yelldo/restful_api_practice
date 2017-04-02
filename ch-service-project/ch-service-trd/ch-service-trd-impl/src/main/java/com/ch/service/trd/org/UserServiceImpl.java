@@ -2,7 +2,9 @@ package com.ch.service.trd.org;
 
 import com.ch.model.trd.org.account.domain.User;
 import com.ch.service.base.ParentServiceImpl;
+import com.ch.service.util.ServiceExcepiton;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,10 +30,16 @@ public class UserServiceImpl extends ParentServiceImpl implements UserService {
     @Override
     @Transactional
     public User regist(String mobile, String password) {
+        if (StringUtils.isBlank(mobile)) {
+            throw new ServiceExcepiton("手机号不能为空");
+        }
+        if (StringUtils.isBlank(password)) {
+            throw new ServiceExcepiton("密码不能为空");
+        }
         User user = new User();
         user.setCode(UUID.randomUUID().toString());
         user.setMobile(mobile);
-        user.setPassword(DigestUtils.md5Hex(mobile+""+password));
+        user.setPassword(DigestUtils.md5Hex(mobile+"yelldo"+password));
         em.merge(user);
         return user;
     }

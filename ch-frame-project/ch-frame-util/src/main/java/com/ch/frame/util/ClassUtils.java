@@ -6,6 +6,8 @@ import org.apache.commons.logging.LogFactory;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -17,11 +19,47 @@ import java.util.jar.JarFile;
 
 /**
  * 类相关的工具类
- * 
+ *
  * @author <a href="mailto:ohergal@gmail.com">ohergal</a>
- * 
+ *
  */
 public class ClassUtils{
+	/**
+	 * 根据注解获取某个类的字段
+	 * @param cla
+	 * @param annotation
+	 * @return
+	 */
+	public static List<Field> getAllDeclaredFieldsByAnnotation(Class cla, Class annotation) {
+		Class cla2 = cla;
+		List<Class> cls = new ArrayList<Class>();
+		List<Field> fls = new ArrayList<Field>();
+		while(cla2 != null && !cla2.equals(Object.class)){
+			cls.add(0, cla2);
+			cla2 = cla2.getSuperclass();
+		}
+		for(Class cla3 : cls){
+			for(Field f : cla3.getDeclaredFields()){
+				if(annotation == null){
+					if(!Modifier.isStatic(f.getModifiers())){
+						fls.add(f);
+					}
+				}else if(f.getAnnotation(annotation) != null){
+					fls.add(f);
+				}
+			}
+		}		
+		return fls;
+	}
+	/**
+	 * 获取某个类的字段
+	 * @param cla
+	 * @return
+	 */
+	public static List<Field> getAllDeclaredFields(Class cla) {
+		return getAllDeclaredFieldsByAnnotation(cla, null);
+	}
+
 
 	/**
 	 * 取得某个接口下所有实现这个接口的类
@@ -74,8 +112,8 @@ public class ClassUtils{
 
 	/**
 	 * 从包package中获取所有的Class
-	 * 
-	 * @param pack
+	 *
+	 * @param packageName
 	 * @return
 	 */
 	public static List<Class<?>> getClasses(String packageName) {
@@ -185,8 +223,8 @@ public class ClassUtils{
 
 	/**
 	 * 从包package中获取所有的资源
-	 * 
-	 * @param pack
+	 *
+	 * @param packageName
 	 * @return
 	 */
 	public static List<URL> getAllResource(String packageName) {
@@ -207,15 +245,17 @@ public class ClassUtils{
 			dirs = Thread.currentThread().getContextClassLoader()
 					.getResources(pname);
 
+			log.info("dir#" +dirs.toString()+", hasMoreElements#"+dirs.hasMoreElements());
+
 			List<String> alls = new ArrayList<String>();
 			// 循环迭代下去
 			while (dirs.hasMoreElements()) {
 				// 获取下一个元素
 				URL url = dirs.nextElement();
-				// log.info("URL:" + url);
 				alls.add(url.toString());
 				// 得到协议的名称
 				String protocol = url.getProtocol();
+				log.info("URL:" + url.toString()+" ,protocol#"+protocol);
 				// 如果是以文件的形式保存在服务器上
 				if ("file".equals(protocol)) {
 					// 获取包的物理路径
@@ -301,7 +341,7 @@ public class ClassUtils{
 
 	/**
 	 * 以文件的形式来获取包下的所有Class
-	 * 
+	 *
 	 * @param packageName
 	 * @param packagePath
 	 * @param recursive
@@ -309,6 +349,7 @@ public class ClassUtils{
 	 */
 	public static void findAndAddClassesInPackageByFile(String packageName,
 			String packagePath, final boolean recursive, List<Class<?>> classes) {
+
 		// 获取此包的目录 建立一个File
 		if (packagePath.startsWith("/")) {
 			packagePath = packagePath.substring(1);
@@ -322,6 +363,7 @@ public class ClassUtils{
 		File[] dirfiles = dir.listFiles(new FileFilter() {
 			// 自定义过滤规则 如果可以循环(包含子目录) 或则是以.class结尾的文件(编译好的java类文件)
 			public boolean accept(File file) {
+
 				return (recursive && file.isDirectory())
 						|| (file.getName().endsWith(".class"));
 			}
@@ -349,7 +391,7 @@ public class ClassUtils{
 
 	/**
 	 * 以文件的形式来获取包下的所有Class
-	 * 
+	 *
 	 * @param packageName
 	 * @param packagePath
 	 * @param recursive
@@ -358,7 +400,7 @@ public class ClassUtils{
 	public static void findAndAddClassesInPackageByFile2(String packageName,
 			String packagePath, final boolean recursive, List<URL> classes) {
 		// 获取此包的目录 建立一个File
-		if (packagePath.startsWith("/")) {
+		if (packagePath.startsWith("/")&&System.getProperty("os.name").startsWith("Windows")) {
 			packagePath = packagePath.substring(1);
 		}
 		// 获取此包的目录 建立一个File

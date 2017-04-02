@@ -22,26 +22,26 @@ import org.springframework.web.bind.annotation.ResponseBody;
 //@RestController
 public class UserAction extends ParentAction {
 
-    @RequestMapping(value="helloworld")
+    @RequestMapping(value = "helloworld")
     @ResponseBody
     public Message test() {
         //test git add and commit
-        return Message.success("访问成功","helloword");
+        return Message.success("访问成功", "helloword");
     }
 
-    @RequestMapping(value="testUse  rService")
+    @RequestMapping(value = "testUse  rService")
     @ResponseBody
     public Message testUserService() {
         UserService userService = this.getProxy(UserService.class);
 
-        return Message.success("访问成功",userService.foo());
+        return Message.success("访问成功", userService.foo());
     }
 
     //登录状态检查
     @RequestMapping("validFailed")
     @ResponseBody
     public Message validFailed() {
-        return Message.responseMsg(Message.CFAIL, Message.MFAIL, Message.NORESP);
+        return Message.responseMsg(Message.FAIL_CODE, Message.FAIL, Message.NORESP);
     }
 
     /**
@@ -57,49 +57,45 @@ public class UserAction extends ParentAction {
     @RequestMapping(value = "token", method = RequestMethod.POST)
     @ResponseBody
     public Message regist(String mobile, String password, Long timestamp) {
-        String msg = "success";
-        String code = "0";
-
         if (StringUtils.isBlank(mobile)) {
-            return Message.responseMsg("100", "手机号不能为空", "");
+            return Message.responseMsg(Message.FAIL_CODE, "手机号不能为空", "");
         }
         if (StringUtils.isBlank(password)) {
-            return Message.responseMsg("100", "密码不能为空", "");
+            return Message.responseMsg(Message.FAIL_CODE, "密码不能为空", "");
         }
         QueryService queryService = ServiceProxyFactory.get(QueryService.class);
         if (null != queryService.findFirst("from User a where a.mobile = ?", mobile)) {
-            return Message.responseMsg("100", "手机号已被注册", "");
+            return Message.responseMsg(Message.FAIL_CODE, "手机号已被注册", "");
         }
         UserService userService = ServiceProxyFactory.get(UserService.class);
-        User member = null;
+        User user = null;
         try {
-            member = userService.regist(mobile, password);
+            user = userService.regist(mobile, password);
         } catch (Exception e) {
             log.error(e.getMessage());
-            msg = "服务端错误，请联系管理员";
-            return Message.responseMsg("200", msg, "");
+            return Message.responseMsg(Message.FAIL_CODE, Message.ERRO_RESP, "");
         }
 
-        JSONObject params = new JSONObject();
-        params.put("username", mobile);
-        params.put("password", member.getPassword());
-
         //注册成功，生成 access_token，返回给客户端
-        if (null != member) {
+        if (null != user) {
             String token = "";
+            JSONObject params = new JSONObject();
+            params.put("username", mobile);
+            params.put("password", user.getPassword());
+            params.put("timestamp", timestamp);
             try {
                 token = SessionManager.get().createToken(params);
             } catch (Exception e) {
                 log.error(e.getMessage());
-                System.out.println(e.getMessage());
+                return Message.responseMsg(Message.FAIL_CODE, Message.ERRO_RESP, "");
             }
-
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("access_token", token);
             jsonObject.put("expires_in", "25200");//一周失效
-            return Message.responseMsg(code, msg, jsonObject);
+            return Message.responseMsg(Message.SUCCESS_CODE, Message.SUCCESS, jsonObject);
+        } else {
+            return Message.responseMsg(Message.FAIL_CODE, Message.ERRO_RESP, "");
         }
-        return Message.responseMsg(code, msg, "");
     }
 
     /**
@@ -117,11 +113,11 @@ public class UserAction extends ParentAction {
 
         if (StringUtils.isBlank(mobile)) {
             msg = "手机号不能为空";
-            code = "100";
+            code = Message.FAIL_CODE;
         }
         if (StringUtils.isBlank(password)) {
             msg = "密码不能为空";
-            code = "100";
+            code = Message.FAIL_CODE;
         }
         UserService userService = ServiceProxyFactory.get(UserService.class);
         return Message.responseMsg(code, msg, "");

@@ -36,7 +36,7 @@ public class SessionManager {
      * @return
      */
     public String createToken(JSONObject params) {
-        String md5key = ConfigHelper.getProp("token").get("md5key");
+        String md5key = ConfigHelper.getProp("apprequest").get("md5key");
         String username = params.getString("username");
         String password = params.getString("password");//经过MD5加密
         String timestamp = params.getString("timestamp");
@@ -55,7 +55,7 @@ public class SessionManager {
         return token;
     }
 
-    private boolean exists(String group, String token) {
+    public boolean exists(String group, String token) {
         return RedisHelper2.exists(group, token);
     }
 
@@ -70,8 +70,8 @@ public class SessionManager {
         String username = params.getString("username");
         String password = params.getString("password");
         String timestamp2 = params.getString("timestamp");
-        String md5key = ConfigHelper.getProp("token").get("md5key");
-        String expiretime = ConfigHelper.getProp("token").get("expiretime");
+        String md5key = ConfigHelper.getProp("apprequest").get("md5key");
+        String expiretime = ConfigHelper.getProp("apprequest").get("expiretime");
         String timestamp1 = token.substring(token.indexOf("+") + 1);
         // 校验token是否相等
         Boolean tokenEquals = token.equals(DigestUtils.md5Hex(username + password + md5key));

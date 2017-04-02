@@ -12,19 +12,19 @@ public class SerializeUtils {
 	}
 	
 	public static Object hessianDeserialize(InputStream input) throws IOException{  
-	    return new HessianInput(input).readObject();  
+	    return new HessianInput(input).readObject();
 	}
 	
 	public static byte[] hessianSerialize(Object obj) throws IOException{  
 	    if(obj==null) throw new NullPointerException();  
 	      
 	    ByteArrayOutputStream os = new ByteArrayOutputStream();  
-	    HessianOutput ho = new HessianOutput(os);  
+	    HessianOutput ho = new HessianOutput(os);
 	    ho.writeObject(obj);  
 	    return os.toByteArray();  
 	}
 	public static void hessianSerialize(Object obj, OutputStream out) throws IOException{  
-	    HessianOutput ho = new HessianOutput(out);  
+	    HessianOutput ho = new HessianOutput(out);
 	    ho.writeObject(obj);
 	}
 	
