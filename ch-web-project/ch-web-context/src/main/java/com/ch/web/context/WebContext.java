@@ -57,9 +57,9 @@ public class WebContext {
 
     public WebContext(String token, HttpServletRequest request) {
         this.token = token;
-        if (StringUtils.isBlank(token)) {
-            throw new WebException("Token is null");
-        }
+        //if (StringUtils.isBlank(token)) {
+        //    throw new WebException("Token is null");
+        //}
         this.request = request;
     }
 

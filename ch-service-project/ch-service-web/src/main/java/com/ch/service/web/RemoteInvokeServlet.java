@@ -54,15 +54,15 @@ public class RemoteInvokeServlet extends HttpServlet {
             }
             Map<String, Object> param = (Map<String, Object>) obj;
             //检验请求中是否带有token
-            String token = (String) param.get("token");
+            /*String token = (String) param.get("token");
             if (StringUtils.isBlank(token)) {
                 throw new ServiceException("token为空");
-            }
+            }*/
             // TODO 检查参数中是否带有时间戳
             /*if (!SessionManager.getGroup().validateToken(sid)) {
                 throw new ServiceException("无效会话");
             }*/
-            ctx.setToken(token);
+            //ctx.setToken(token);
             //类
             Class port = Class.forName((String) param.get("class"));
             Class[] types = (Class[]) param.get("paramtypes");

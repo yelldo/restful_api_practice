@@ -1,5 +1,9 @@
 package com.ch.service.trd.org;
 
+import com.alibaba.fastjson.JSONObject;
+import com.ch.frame.redis.RedisHelper2;
+import com.ch.frame.session.SessionManager;
+import com.ch.frame.util.MD5;
 import com.ch.model.trd.org.account.domain.User;
 import com.ch.service.base.ParentServiceImpl;
 import com.ch.service.util.ServiceExcepiton;
@@ -45,9 +49,11 @@ public class UserServiceImpl extends ParentServiceImpl implements UserService {
     }
 
     @Override
-    public String login(String mobile,String password) {
-
-        return "";
+    public User login(String mobile, String password) {
+        User user = em.findFirst("from User a where a.mobile = ?",false,mobile);
+        if(user==null)throw new ServiceExcepiton("手机号未注册");
+        if(!MD5.MD5Encode(password).equals(user.getPassword()))throw new ServiceExcepiton("密码错误");
+        return user;
     }
 
 }

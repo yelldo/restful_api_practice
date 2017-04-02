@@ -28,7 +28,7 @@ public class TokenTestAction extends ParentAction{
         String msg = Message.SUCCESS;
         String token = "";
         try{
-            token = SessionManager.get().createToken(params);
+            token = SessionManager.get().createToken();
         }catch (Exception e){
             code=Message.FAIL_CODE;
             msg=Message.FAIL;

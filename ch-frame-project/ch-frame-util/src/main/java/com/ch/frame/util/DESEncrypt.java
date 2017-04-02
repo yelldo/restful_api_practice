@@ -6,6 +6,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 import java.io.IOException;
+import java.util.UUID;
 
 public class DESEncrypt {
 	
@@ -28,11 +29,13 @@ public class DESEncrypt {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        try {
+        /*try {
             System.in.read();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+
+        System.out.println(UUID.randomUUID());
     }
 
     public static String decrypt(String key,String message) throws Exception {

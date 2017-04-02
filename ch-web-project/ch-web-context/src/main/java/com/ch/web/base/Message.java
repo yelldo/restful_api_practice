@@ -17,6 +17,7 @@ public class Message {
     public final static String FAIL = "false";
     public final static String ERRO_RESP = "服务端错误，请联系管理员";
     public final static String NORESP = "";
+    public final static String DOLOGIN_CODE = "101";
 
 
     public static Message responseMsg(String code,String msg,Object data){

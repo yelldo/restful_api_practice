@@ -1,5 +1,6 @@
 package com.ch.service.trd.org;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ch.model.trd.org.account.domain.User;
 
 /**
@@ -23,7 +24,7 @@ public interface UserService {
      * @param password
      * @return
      */
-    public String login(String mobile,String password);
+    public User login(String mobile, String password);
 
 
 

@@ -53,7 +53,18 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <mvc:exclude-mapping path="/member/*"/>
+            <!--资源文件不拦截-->
+            <mvc:exclude-mapping path="/image/*"/>
+            <mvc:exclude-mapping path="/res/*"/>
+            <mvc:exclude-mapping path="/dx2/*"/>
+            <mvc:exclude-mapping path="/register.htm"/>
+            <mvc:exclude-mapping path="/authImage"/>
+            <mvc:exclude-mapping path="/ms/sendMsg"/>
+            <mvc:exclude-mapping path="/pki/*"/>
+            <mvc:exclude-mapping path="/caLogin"/>
+            <mvc:exclude-mapping path="/index"/>
+            <mvc:exclude-mapping path="/comm/*"/>
+            <mvc:exclude-mapping path="/trd_api/*"/>
             <bean class="com.ch.web.interceptor.LoginInterceptor"></bean>
         </mvc:interceptor>
     </mvc:interceptors>

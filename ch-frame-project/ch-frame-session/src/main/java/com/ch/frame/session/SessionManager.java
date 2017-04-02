@@ -3,9 +3,15 @@ package com.ch.frame.session;
 import com.alibaba.fastjson.JSONObject;
 import com.ch.frame.conf.ConfigHelper;
 import com.ch.frame.exception.GeneralException;
+import com.ch.frame.redis.CacheGroup;
+import com.ch.frame.redis.CacheGroups;
 import com.ch.frame.redis.CacheResult;
 import com.ch.frame.redis.RedisHelper2;
+import com.ch.frame.util.DESEncrypt;
+import com.ch.frame.util.RsaDesUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+
+import java.util.UUID;
 
 /**
  * 会话数据管理器
@@ -23,24 +29,40 @@ public class SessionManager {
     }
 
     //private static String SESSIONCACHEGROUP = "_session";
-    private final String TOKENCACHEGROUP = "token";
+    public final String TOKENCACHEGROUP = "token";
 
     private SessionManager() {
         //CacheGroups.get().addGroup(SESSIONCACHEGROUP, "系统缓存", 30);
     }
 
+    public JSONObject generateToken (JSONObject param){
+        String token = UUID.randomUUID().toString();
+        JSONObject info = new JSONObject();
+        info.put("username",param.getString("mobile"));
+        info.put("userid",param.getLong("id"));
+        RedisHelper2.set(TOKENCACHEGROUP,token,info);
+        CacheGroup cg = CacheGroups.getGroup(TOKENCACHEGROUP);
+        JSONObject resp = new JSONObject();
+        resp.put("token",token);
+        resp.put("expire_time",cg.getExpress());
+        return resp;
+    }
+
     /**
      * 生成一个新的token
+     * 客户端URL
      *
      * @param params {username,password,timestamp}
      * @return
      */
-    public String createToken(JSONObject params) {
+    public String createToken2(JSONObject params) {
         String md5key = ConfigHelper.getProp("apprequest").get("md5key");
         String username = params.getString("username");
         String password = params.getString("password");//经过MD5加密
+        String key = RsaDesUtils.genRandomKey(8);
         String timestamp = params.getString("timestamp");
         String sign = DigestUtils.md5Hex(username + password + md5key);
+        //String sign = DigestUtils.md5Hex( + md5key);
         String token = sign + "+" + timestamp;
         //检查redis保存的key,保证不存在重复的key
         if (exists(TOKENCACHEGROUP, token)) {
@@ -49,10 +71,41 @@ public class SessionManager {
             } catch (Exception e) {
                 throw new GeneralException(e);
             }
-            return createToken(params);
+            return createToken2(params);
         }
         RedisHelper2.set("token", token, params);
         return token;
+    }
+
+    public String createToken() {
+        return UUID.randomUUID().toString();
+    }
+
+    public String validSuccess(JSONObject param){
+        JSONObject userInfo = new JSONObject();
+        String key = RsaDesUtils.genRandomKey(8);
+        String token = createToken();
+        userInfo.put("key",key);
+        userInfo.put("username",param.getString("username"));
+        userInfo.put("password",param.getString("password"));
+        RedisHelper2.set("token",token , userInfo);
+
+        JSONObject respInfo = new JSONObject();
+        respInfo.put("key",key);
+        respInfo.put("token",token);
+
+        return respDESEncryptContent(key,respInfo);
+    }
+
+    public String respDESEncryptContent(String key,Object content){
+        String cryperContent = "";
+        try {
+            cryperContent = DESEncrypt.toHexString(DESEncrypt.encrypt(key,content.toString()));
+            System.out.println("加密后的明文:" + cryperContent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cryperContent;
     }
 
     public boolean exists(String group, String token) {
@@ -101,7 +154,7 @@ public class SessionManager {
      *
      * @param token
      */
-    public void clear(String token) {
+    public void deleteToken(String token) {
         RedisHelper2.delete(TOKENCACHEGROUP, token);
     }
 
