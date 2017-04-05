@@ -25,17 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 //@RestController
 public class UserAction extends ParentAction {
 
-    @RequestMapping(value = "helloworld")
-    @ResponseBody
-    public Message test() {
-        return Message.success("访问成功", "helloword1");
-    }
-
     @RequestMapping(value = "testUserService")
     @ResponseBody
     public Message testUserService() {
         UserService userService = this.getProxy(UserService.class);
-
         return Message.success("访问成功", userService.foo());
     }
 

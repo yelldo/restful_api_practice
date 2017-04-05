@@ -145,7 +145,7 @@ public class EntityManagerWrapperImpl implements EntityManagerWrapper {
     @Override
 	@SuppressWarnings("unchecked")
     public <T> T merge(Object obj) {
-    	if(obj == null)
+    	/*if(obj == null)
     		return null;
     	//记录操作日志
     	ServiceContext ctx = ServiceContext.get();	
@@ -187,14 +187,14 @@ public class EntityManagerWrapperImpl implements EntityManagerWrapper {
 					obj = old;
 				}
 			}
-		}
+		}*/
         obj = (T) em.merge(obj);
-  		//记录新加或修改日志
+  		/*//记录新加或修改日志
   		if(ctx != null){
   			ctx.addUpdateLogger(orientData, obj);
   		}
         //同步刷新实体缓存
-        refreshCacheByDomainObject(obj, false);
+        refreshCacheByDomainObject(obj, false);*/
   		return (T)obj;
     }
     

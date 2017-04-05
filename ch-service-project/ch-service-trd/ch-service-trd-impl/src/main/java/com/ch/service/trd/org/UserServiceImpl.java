@@ -52,7 +52,7 @@ public class UserServiceImpl extends ParentServiceImpl implements UserService {
     public User login(String mobile, String password) {
         User user = em.findFirst("from User a where a.mobile = ?",false,mobile);
         if(user==null)throw new ServiceExcepiton("手机号未注册");
-        if(!MD5.MD5Encode(password).equals(user.getPassword()))throw new ServiceExcepiton("密码错误");
+        if(!DigestUtils.md5Hex(mobile+"yelldo"+password).equals(user.getPassword()))throw new ServiceExcepiton("密码错误");
         return user;
     }
 

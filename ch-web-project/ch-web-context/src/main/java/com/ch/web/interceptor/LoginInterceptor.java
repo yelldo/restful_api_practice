@@ -42,9 +42,14 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String context = request.getContextPath();
         String uri = request.getRequestURI();
+        String requestMethod = request.getMethod();
         if (context.equals("/chapp")) {
             // 登录，注册，注销的请求直接放行
-            if (uri.indexOf("login") > 0 || uri.indexOf("regist") > 0 || uri.indexOf("logout") > 0 || uri.indexOf("helloworld") > 0 || uri.indexOf("user/validFailed")>0) {
+            if (uri.indexOf("user/token") > 0 || uri.indexOf("regist") > 0 || uri.indexOf("logout") > 0 || uri.indexOf("helloworld") > 0 || uri.indexOf("user/validFailed") > 0) {
+                return true;
+            }
+            //注册
+            if (uri.indexOf("user") > 0 && requestMethod.equals("POST")) {
                 return true;
             }
             //request.getRequestDispatcher("/member/validFailed").forward(request, response);
